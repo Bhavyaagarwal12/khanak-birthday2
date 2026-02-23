@@ -3,22 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A Story</title>
+<title>A Moment</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
+
 body{
 background:black;
 color:white;
-overflow:hidden;
 font-family:'Poppins',sans-serif;
+min-height:100vh;
+overflow:hidden;
 }
 
 /* SCENE BASE */
 .scene{
-position:absolute;
+position:fixed;
 width:100%;
 height:100%;
 display:flex;
@@ -30,19 +32,27 @@ opacity:0;
 transition:2s ease;
 padding:30px;
 }
-.active{opacity:1;}
 
-/* PASSWORD */
+.active{
+opacity:1;
+}
+
+/* PASSWORD SCREEN */
 #lock{
 background:radial-gradient(circle at center,#111,#000);
+z-index:10;
 }
+
 #lock input{
-padding:10px;
+padding:12px;
 border:none;
 border-radius:10px;
 margin-top:15px;
 text-align:center;
+font-size:18px;
+width:200px;
 }
+
 button{
 margin-top:15px;
 padding:10px 25px;
@@ -61,6 +71,7 @@ width:100%;
 height:100%;
 z-index:-1;
 }
+
 .star{
 position:absolute;
 width:2px;
@@ -68,52 +79,44 @@ height:2px;
 background:white;
 animation:twinkle 3s infinite alternate;
 }
+
 @keyframes twinkle{
 from{opacity:0.2;}
 to{opacity:1;}
 }
 
-/* TEXT STYLES */
+/* TEXT */
 .line{
-font-size:2.3rem;
+font-size:2rem;
 max-width:900px;
 opacity:0;
 animation:fadeIn 2s forwards;
 }
+
 @keyframes fadeIn{
 to{opacity:1;}
 }
 
 .title{
 font-family:'Playfair Display',serif;
-font-size:5rem;
+font-size:4rem;
 letter-spacing:5px;
 }
 
 .name{
 font-family:'Playfair Display',serif;
-font-size:6rem;
+font-size:4rem;
 background:linear-gradient(90deg,#fff,#aaa,#fff);
+background-size:200%;
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 animation:shine 4s infinite linear;
 }
+
 @keyframes shine{
 0%{background-position:-200%;}
 100%{background-position:200%;}
 }
-
-/* LIGHT FADE */
-.fade-dark{
-position:absolute;
-width:100%;
-height:100%;
-background:black;
-opacity:0;
-transition:3s;
-pointer-events:none;
-}
-.fade-dark.active{opacity:0.7;}
 
 /* FIREWORKS */
 canvas{
@@ -130,11 +133,11 @@ z-index:-1;
 <!-- PASSWORD -->
 <div class="scene active" id="lock">
 <h2>Enter Password</h2>
-<input type="password" id="pass">
-<button onclick="start()">Enter</button>
+<input type="password" id="pass" autofocus>
+<button id="enterBtn">Enter</button>
 </div>
 
-<!-- INTRO TITLE -->
+<!-- INTRO -->
 <div class="scene" id="intro">
 <div class="title">A Moment</div>
 </div>
@@ -150,16 +153,19 @@ z-index:-1;
 <canvas id="fireworks"></canvas>
 <div class="name">Happy Birthday, Khanak</div>
 <div class="line" style="margin-top:30px;">
-May life meet you with the same warmth  
-you bring into it.
+May life meet you with the same warmth you bring into it.
 </div>
 </div>
 
 <script>
 
-/* PASSWORD START */
+/* PASSWORD FIXED FOR MOBILE */
+document.getElementById("enterBtn").addEventListener("click", start);
+
 function start(){
-if(document.getElementById("pass").value==="16"){
+let value = document.getElementById("pass").value.trim();
+
+if(value === "16"){
 switchScene("lock","intro");
 setTimeout(()=>switchScene("intro","story"),4000);
 setTimeout(playStory,4500);
@@ -174,7 +180,7 @@ document.getElementById(to).classList.add("active");
 }
 
 /* STARS */
-for(let i=0;i<250;i++){
+for(let i=0;i<150;i++){
 let star=document.createElement("div");
 star.classList.add("star");
 star.style.left=Math.random()*100+"%";
@@ -183,7 +189,7 @@ star.style.animationDuration=(Math.random()*3+2)+"s";
 document.getElementById("stars").appendChild(star);
 }
 
-/* STORY TIMELINE */
+/* STORY */
 const lines=[
 "Some people pass through life quietly.",
 "But they leave an impact that stays.",
@@ -191,16 +197,14 @@ const lines=[
 "Just real.",
 "",
 "Today is not about history.",
-"It’s not about explanations.",
-"",
-"It’s simply about acknowledging someone special.",
-"",
-"And wishing her a year filled with light."
+"It’s simply about wishing someone special",
+"a year filled with light."
 ];
 
 function playStory(){
 let container=document.getElementById("storyText");
 let i=0;
+
 let interval=setInterval(()=>{
 let div=document.createElement("div");
 div.classList.add("line");
@@ -208,6 +212,7 @@ div.style.margin="20px 0";
 div.innerHTML=lines[i];
 container.appendChild(div);
 i++;
+
 if(i>=lines.length){
 clearInterval(interval);
 setTimeout(()=>switchScene("story","final"),8000);
@@ -220,17 +225,19 @@ const canvas=document.getElementById("fireworks");
 const ctx=canvas.getContext("2d");
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
+
 let particles=[];
 
 function firework(){
 let x=Math.random()*canvas.width;
 let y=Math.random()*canvas.height/2;
-for(let i=0;i<100;i++){
+
+for(let i=0;i<60;i++){
 particles.push({
 x:x,y:y,
-speedX:(Math.random()-0.5)*8,
-speedY:(Math.random()-0.5)*8,
-life:100,
+speedX:(Math.random()-0.5)*6,
+speedY:(Math.random()-0.5)*6,
+life:80,
 color:`hsl(${Math.random()*360},100%,60%)`
 });
 }
@@ -239,16 +246,22 @@ color:`hsl(${Math.random()*360},100%,60%)`
 function animate(){
 ctx.fillStyle="rgba(0,0,0,0.2)";
 ctx.fillRect(0,0,canvas.width,canvas.height);
+
 particles.forEach((p,i)=>{
 p.x+=p.speedX;
 p.y+=p.speedY;
 p.life--;
 ctx.fillStyle=p.color;
 ctx.fillRect(p.x,p.y,3,3);
-if(p.life<=0)particles.splice(i,1);
+
+if(p.life<=0){
+particles.splice(i,1);
+}
 });
+
 requestAnimationFrame(animate);
 }
+
 setInterval(firework,2000);
 animate();
 
