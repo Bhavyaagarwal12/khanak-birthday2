@@ -3,92 +3,136 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Khanak's Birthday</title>
+<title>The Legend of Khanak</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 body{background:black;color:white;overflow:hidden;}
-section{
-  position:absolute;
-  width:100%;
-  height:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  transition:1s;
-  opacity:0;
-  pointer-events:none;
+
+.scene{
+position:absolute;
+width:100%;
+height:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+text-align:center;
+opacity:0;
+transition:2s;
 }
-.active{
-  opacity:1;
-  pointer-events:auto;
+.active{opacity:1;}
+
+/* PASSWORD */
+#lock{
+background:radial-gradient(circle,#111,#000);
+}
+#lock input{
+padding:10px;
+margin-top:15px;
+text-align:center;
+border:none;
+border-radius:10px;
 }
 button{
-  padding:12px 30px;
-  border:none;
-  border-radius:30px;
-  background:#ff0055;
-  color:white;
-  cursor:pointer;
-  margin-top:20px;
-  font-size:16px;
-  transition:0.3s;
-}
-button:hover{transform:scale(1.1);}
-.big-text{
-  font-size:3rem;
-  font-weight:900;
-  text-align:center;
-}
-.glow{
-  animation:glow 2s infinite alternate;
-}
-@keyframes glow{
-  from{text-shadow:0 0 10px #ff0055;}
-  to{text-shadow:0 0 40px #ff66aa;}
+padding:12px 30px;
+border:none;
+border-radius:30px;
+background:#ff0055;
+color:white;
+cursor:pointer;
+margin-top:20px;
 }
 
-/* CINEMATIC INTRO */
-.intro-text{
-  font-size:5rem;
-  font-weight:900;
-  letter-spacing:8px;
-  color:red;
-  animation:zoom 3s forwards;
+/* NETFLIX LIGHT BEAM */
+.beam{
+position:absolute;
+width:200%;
+height:200%;
+background:linear-gradient(90deg,transparent,red,transparent);
+transform:rotate(45deg);
+animation:beamMove 2s forwards;
+}
+@keyframes beamMove{
+0%{left:-200%;}
+100%{left:200%;}
+}
+
+.netflix{
+font-size:6rem;
+color:red;
+letter-spacing:10px;
+animation:zoom 3s forwards;
 }
 @keyframes zoom{
-  0%{transform:scale(0.5);opacity:0;}
-  50%{opacity:1;}
-  100%{transform:scale(1.8);opacity:0;}
+0%{transform:scale(0.5);opacity:0;}
+50%{opacity:1;}
+100%{transform:scale(2);opacity:0;}
 }
 
-/* PHOTO GALLERY */
-.gallery{
-  display:flex;
-  gap:20px;
+/* GALAXY */
+.stars{
+position:absolute;
+width:100%;
+height:100%;
+background:black;
+overflow:hidden;
 }
-.gallery img{
-  width:150px;
-  height:200px;
-  object-fit:cover;
-  border-radius:15px;
-  transition:0.5s;
+.star{
+position:absolute;
+width:2px;
+height:2px;
+background:white;
+animation:twinkle 2s infinite alternate;
 }
-.gallery img:hover{
-  transform:scale(1.2);
+@keyframes twinkle{
+from{opacity:0.2;}
+to{opacity:1;}
+}
+.shooting{
+position:absolute;
+width:3px;
+height:80px;
+background:linear-gradient(white,transparent);
+transform:rotate(45deg);
+animation:shoot 3s linear infinite;
+}
+@keyframes shoot{
+0%{top:-100px;left:0;}
+100%{top:100%;left:100%;}
 }
 
-/* Floating hearts */
-.heart{
-  position:absolute;
-  color:#ff0055;
-  animation:float 6s linear infinite;
+/* NAME */
+.name{
+font-family:'Dancing Script',cursive;
+font-size:6rem;
+background:linear-gradient(90deg,#ff0055,#ff66aa,#ff0055);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+animation:glow 2s infinite alternate;
 }
-@keyframes float{
-  0%{transform:translateY(100vh);}
-  100%{transform:translateY(-10vh);}
+@keyframes glow{
+from{text-shadow:0 0 20px #ff0055;}
+to{text-shadow:0 0 60px #ff66aa;}
+}
+
+.big{font-size:3rem;font-weight:900;}
+
+/* Glass effect */
+.glass{
+backdrop-filter:blur(15px);
+background:rgba(255,255,255,0.05);
+padding:40px;
+border-radius:20px;
+}
+
+/* FIREWORKS */
+canvas{
+position:absolute;
+top:0;
+left:0;
 }
 </style>
 </head>
@@ -96,82 +140,124 @@ button:hover{transform:scale(1.1);}
 <body>
 
 <!-- PASSWORD -->
-<section id="lock" class="active">
+<div class="scene active" id="lock">
 <h2>Enter Password 🔐</h2>
-<input type="password" id="pass" style="padding:10px;text-align:center;">
-<button onclick="checkPass()">Unlock</button>
-</section>
-
-<!-- INTRO -->
-<section id="intro">
-<div class="intro-text">KHANAK</div>
-</section>
-
-<!-- BIG MESSAGE -->
-<section id="message">
-<div class="big-text glow">
-This world became more beautiful <br> the day you were born 💖
+<input type="password" id="pass">
+<button onclick="unlock()">Unlock</button>
 </div>
-<button onclick="nextSection('gallery')">Continue</button>
-</section>
 
-<!-- GALLERY -->
-<section id="gallery">
-<h2>Our Beautiful Moments 📸</h2>
-<div class="gallery">
-<img src="photo1.jpg">
-<img src="photo2.jpg">
-<img src="photo3.jpg">
+<!-- NETFLIX -->
+<div class="scene" id="intro">
+<div class="beam"></div>
+<div class="netflix">KHANAK</div>
 </div>
-<button onclick="nextSection('letter')">Open Letter 💌</button>
-</section>
 
-<!-- LETTER -->
-<section id="letter">
-<div class="big-text">
-No matter where life takes us,<br>
-I genuinely wish you success,<br>
-peace, happiness and endless smiles.<br><br>
-You deserve the universe 🌸✨
+<!-- STORY -->
+<div class="scene" id="story">
+<div class="stars" id="stars"></div>
+<div class="glass">
+<div class="big" id="storyText"></div>
 </div>
-<button onclick="nextSection('finale')">Final Surprise 🎆</button>
-</section>
+</div>
 
-<!-- FINALE -->
-<section id="finale">
-<div class="big-text glow">
-HAPPY BIRTHDAY KHANAK 💖🎂
+<!-- FINAL -->
+<div class="scene" id="final">
+<canvas id="fireworks"></canvas>
+<div class="name">Happy Birthday Khanak 💖</div>
+<div class="big">You are truly one of a kind ✨</div>
 </div>
-</section>
 
 <script>
-function checkPass(){
-  if(document.getElementById("pass").value==="16"){
-    document.getElementById("lock").classList.remove("active");
-    document.getElementById("intro").classList.add("active");
-    setTimeout(()=>{
-      document.getElementById("intro").classList.remove("active");
-      document.getElementById("message").classList.add("active");
-    },3000);
-  } else {
-    alert("Wrong Password 😅");
-  }
+
+/* SOUND (Netflix-style thud) */
+const sound = new Audio("https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3");
+
+/* PASSWORD */
+function unlock(){
+if(document.getElementById("pass").value==="16"){
+sound.play();
+switchScene("lock","intro");
+setTimeout(()=>switchScene("intro","story"),3000);
+startStory();
+}else{
+alert("Wrong Password 😅");
+}
+}
+function switchScene(from,to){
+document.getElementById(from).classList.remove("active");
+document.getElementById(to).classList.add("active");
 }
 
-function nextSection(id){
-  document.querySelector(".active").classList.remove("active");
-  document.getElementById(id).classList.add("active");
+/* STARS */
+for(let i=0;i<250;i++){
+const star=document.createElement("div");
+star.classList.add("star");
+star.style.left=Math.random()*100+"%";
+star.style.top=Math.random()*100+"%";
+document.getElementById("stars").appendChild(star);
 }
-
-/* Floating hearts */
 setInterval(()=>{
-  const heart=document.createElement("div");
-  heart.classList.add("heart");
-  heart.innerHTML="❤";
-  heart.style.left=Math.random()*100+"vw";
-  document.body.appendChild(heart);
-  setTimeout(()=>{heart.remove();},6000);
-},400);
+const shoot=document.createElement("div");
+shoot.classList.add("shooting");
+document.getElementById("stars").appendChild(shoot);
+setTimeout(()=>shoot.remove(),3000);
+},4000);
+
+/* STORY */
+const lines=[
+"Some souls shine differently ✨",
+"They leave magic in ordinary moments 💫",
+"And today… is about celebrating you 💖",
+"Khanak, may your life always sparkle 🌸"
+];
+let index=0;
+function startStory(){
+const text=document.getElementById("storyText");
+const interval=setInterval(()=>{
+text.innerHTML=lines[index];
+index++;
+if(index>=lines.length){
+clearInterval(interval);
+setTimeout(()=>switchScene("story","final"),4000);
+}
+},3000);
+}
+
+/* FIREWORKS */
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+let particles=[];
+function firework(){
+let x=Math.random()*canvas.width;
+let y=Math.random()*canvas.height/2;
+for(let i=0;i<100;i++){
+particles.push({
+x:x,y:y,
+speedX:(Math.random()-0.5)*8,
+speedY:(Math.random()-0.5)*8,
+life:100,
+color:`hsl(${Math.random()*360},100%,60%)`
+});
+}
+}
+function animate(){
+ctx.fillStyle="rgba(0,0,0,0.2)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+particles.forEach((p,i)=>{
+p.x+=p.speedX;
+p.y+=p.speedY;
+p.life--;
+ctx.fillStyle=p.color;
+ctx.fillRect(p.x,p.y,3,3);
+if(p.life<=0)particles.splice(i,1);
+});
+requestAnimationFrame(animate);
+}
+setInterval(firework,1500);
+animate();
+
 </script>
 
 </body>
