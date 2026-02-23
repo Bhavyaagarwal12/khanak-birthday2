@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A Moment</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -14,11 +14,10 @@ body{
 background:black;
 color:white;
 font-family:'Poppins',sans-serif;
-min-height:100vh;
 overflow:hidden;
 }
 
-/* SCENE */
+/* SCENES */
 .scene{
 position:fixed;
 width:100%;
@@ -29,33 +28,31 @@ align-items:center;
 flex-direction:column;
 text-align:center;
 padding:30px;
-visibility:hidden;
 opacity:0;
+visibility:hidden;
 transition:opacity 1.5s ease;
 }
 
 .scene.active{
-visibility:visible;
 opacity:1;
+visibility:visible;
 z-index:10;
 }
 
-/* PASSWORD SCREEN */
+/* PASSWORD */
 #lock{
 background:radial-gradient(circle at center,#111,#000);
 z-index:50;
 }
 
-#lock input{
+input{
 padding:12px;
-border:none;
 border-radius:10px;
+border:none;
 margin-top:15px;
-text-align:center;
 font-size:18px;
 width:200px;
-background:white;
-color:black;
+text-align:center;
 }
 
 button{
@@ -66,23 +63,62 @@ border-radius:20px;
 background:white;
 color:black;
 cursor:pointer;
-font-weight:500;
 }
 
-/* STARS */
-#stars{
+/* TEXT */
+.title{
+font-family:'Playfair Display',serif;
+font-size:2.8rem;
+letter-spacing:3px;
+}
+
+.line{
+font-size:1.5rem;
+max-width:800px;
+opacity:0;
+animation:fadeIn 2s forwards;
+margin:20px 0;
+}
+
+@keyframes fadeIn{
+to{opacity:1;}
+}
+
+/* PHOTO */
+.photo-container{
+position:relative;
+width:85%;
+max-width:400px;
+height:500px;
+overflow:hidden;
+border-radius:20px;
+box-shadow:0 0 40px rgba(255,255,255,0.2);
+}
+
+.photo{
 position:absolute;
 width:100%;
 height:100%;
-z-index:-1;
+object-fit:cover;
+opacity:0;
+transform:scale(1);
+transition:opacity 2s ease, transform 8s ease;
 }
 
-.star{
+.photo.active{
+opacity:1;
+transform:scale(1.1);
+}
+
+/* SPARKLES */
+.sparkle{
 position:absolute;
-width:2px;
-height:2px;
+width:4px;
+height:4px;
 background:white;
-animation:twinkle 3s infinite alternate;
+border-radius:50%;
+opacity:0.8;
+animation:twinkle 2s infinite alternate;
 }
 
 @keyframes twinkle{
@@ -90,45 +126,28 @@ from{opacity:0.2;}
 to{opacity:1;}
 }
 
-/* TEXT */
-.line{
-font-size:2rem;
-max-width:900px;
-opacity:0;
-animation:fadeIn 2s forwards;
-}
-
-@keyframes fadeIn{
-to{opacity:1;}
-}
-
-.title{
-font-family:'Playfair Display',serif;
-font-size:4rem;
-letter-spacing:5px;
-}
-
-.name{
-font-family:'Playfair Display',serif;
-font-size:4rem;
-background:linear-gradient(90deg,#fff,#aaa,#fff);
-background-size:200%;
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-animation:shine 4s infinite linear;
-}
-
-@keyframes shine{
-0%{background-position:-200%;}
-100%{background-position:200%;}
-}
-
+/* HEARTS */
 canvas{
 position:absolute;
 top:0;
 left:0;
-z-index:-1;
+pointer-events:none;
 }
+
+/* NAME */
+.name{
+font-family:'Playfair Display',serif;
+font-size:3rem;
+letter-spacing:4px;
+}
+
+/* TRAILER TEXT */
+.trailer{
+font-size:2rem;
+opacity:0;
+transition:opacity 2s ease;
+}
+.show{opacity:1;}
 </style>
 </head>
 
@@ -137,70 +156,58 @@ z-index:-1;
 <!-- PASSWORD -->
 <div class="scene active" id="lock">
 <h2>Enter Password</h2>
-<input type="password" id="pass" autocomplete="off">
+<input type="password" id="pass">
 <button onclick="start()">Enter</button>
-</div>
-
-<!-- INTRO -->
-<div class="scene" id="intro">
-<div class="title">A Moment</div>
 </div>
 
 <!-- STORY -->
 <div class="scene" id="story">
-<div id="stars"></div>
 <div id="storyText"></div>
+</div>
+
+<!-- PHOTOS -->
+<div class="scene" id="photos">
+<div class="photo-container" id="photoBox">
+<img src="photo1.jpg" class="photo" id="p1">
+<img src="photo2.jpg" class="photo" id="p2">
+<img src="photo3.jpg" class="photo" id="p3">
+</div>
 </div>
 
 <!-- FINAL -->
 <div class="scene" id="final">
-<canvas id="fireworks"></canvas>
-<div class="name">Happy Birthday, Khanak</div>
-<div class="line" style="margin-top:30px;">
-May life meet you with the same warmth you bring into it.
+<canvas id="hearts"></canvas>
+<div class="trailer" id="trailerText">This year…</div>
+<div class="name" id="nameReveal" style="margin-top:20px;"></div>
+<div class="trailer" id="endLine" style="margin-top:30px;">
+Happy Birthday.
 </div>
 </div>
 
 <script>
 
-/* START */
 function start(){
 let value=document.getElementById("pass").value.trim();
-
 if(value==="16"){
-switchScene("lock","intro");
-setTimeout(()=>switchScene("intro","story"),4000);
-setTimeout(playStory,4500);
+switchScene("lock","story");
+playStory();
 }else{
 alert("Incorrect password");
 }
 }
 
-/* SAFE SCENE SWITCH */
 function switchScene(from,to){
 document.getElementById(from).classList.remove("active");
 document.getElementById(to).classList.add("active");
 }
 
-/* STARS */
-for(let i=0;i<120;i++){
-let star=document.createElement("div");
-star.classList.add("star");
-star.style.left=Math.random()*100+"%";
-star.style.top=Math.random()*100+"%";
-star.style.animationDuration=(Math.random()*3+2)+"s";
-document.getElementById("stars").appendChild(star);
-}
-
 /* STORY */
 const lines=[
-"Some people pass through life quietly.",
-"But they leave an impact that stays.",
-"Not loud. Not dramatic.",
-"Just real.",
+"Some people don’t try to shine.",
+"They just naturally glow.",
 "",
-"Today is simply about wishing someone special",
-"a year filled with light."
+"And when they smile…",
+"The world feels softer."
 ];
 
 function playStory(){
@@ -210,63 +217,122 @@ let i=0;
 let interval=setInterval(()=>{
 let div=document.createElement("div");
 div.classList.add("line");
-div.style.margin="20px 0";
 div.innerHTML=lines[i];
 container.appendChild(div);
 i++;
 
 if(i>=lines.length){
 clearInterval(interval);
-setTimeout(()=>switchScene("story","final"),8000);
+setTimeout(()=>{
+switchScene("story","photos");
+startPhotos();
+},4000);
 }
-},2500);
+},2000);
 }
 
-/* FIREWORKS */
-const canvas=document.getElementById("fireworks");
+/* PHOTOS */
+function startPhotos(){
+let photos=["p1","p2","p3"];
+let i=0;
+
+function showNext(){
+if(i>0){
+document.getElementById(photos[i-1]).classList.remove("active");
+}
+if(i<photos.length){
+document.getElementById(photos[i]).classList.add("active");
+i++;
+setTimeout(showNext,6000);
+}else{
+setTimeout(()=>{
+switchScene("photos","final");
+startFinal();
+},3000);
+}
+}
+showNext();
+}
+
+/* SPARKLES */
+for(let i=0;i<40;i++){
+let s=document.createElement("div");
+s.classList.add("sparkle");
+s.style.left=Math.random()*100+"%";
+s.style.top=Math.random()*100+"%";
+document.getElementById("photoBox").appendChild(s);
+}
+
+/* FINAL TRAILER */
+function startFinal(){
+document.getElementById("trailerText").classList.add("show");
+
+setTimeout(()=>{
+typeName("Khanak");
+},2500);
+
+setTimeout(()=>{
+document.getElementById("endLine").classList.add("show");
+},7000);
+
+startHearts();
+}
+
+/* LETTER BY LETTER */
+function typeName(text){
+let i=0;
+let nameBox=document.getElementById("nameReveal");
+let interval=setInterval(()=>{
+nameBox.innerHTML+=text[i];
+i++;
+if(i>=text.length) clearInterval(interval);
+},300);
+}
+
+/* HEART PARTICLES */
+const canvas=document.getElementById("hearts");
 const ctx=canvas.getContext("2d");
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 
-let particles=[];
+let hearts=[];
 
-function firework(){
-let x=Math.random()*canvas.width;
-let y=Math.random()*canvas.height/2;
-
-for(let i=0;i<50;i++){
-particles.push({
-x:x,y:y,
-speedX:(Math.random()-0.5)*6,
-speedY:(Math.random()-0.5)*6,
-life:70,
-color:`hsl(${Math.random()*360},100%,60%)`
+function createHeart(){
+hearts.push({
+x:Math.random()*canvas.width,
+y:canvas.height,
+size:Math.random()*10+10,
+speed:Math.random()*2+1,
+alpha:1
 });
 }
+
+function drawHeart(x,y,size,alpha){
+ctx.save();
+ctx.globalAlpha=alpha;
+ctx.fillStyle="pink";
+ctx.beginPath();
+ctx.moveTo(x,y);
+ctx.bezierCurveTo(x-size,y-size,x-size*2,y+size/3,x,y+size);
+ctx.bezierCurveTo(x+size*2,y+size/3,x+size,y-size,x,y);
+ctx.fill();
+ctx.restore();
 }
 
-function animate(){
-ctx.fillStyle="rgba(0,0,0,0.2)";
-ctx.fillRect(0,0,canvas.width,canvas.height);
-
-for(let i=particles.length-1;i>=0;i--){
-let p=particles[i];
-p.x+=p.speedX;
-p.y+=p.speedY;
-p.life--;
-ctx.fillStyle=p.color;
-ctx.fillRect(p.x,p.y,3,3);
-
-if(p.life<=0){
-particles.splice(i,1);
+function animateHearts(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+for(let i=hearts.length-1;i>=0;i--){
+let h=hearts[i];
+h.y-=h.speed;
+h.alpha-=0.005;
+drawHeart(h.x,h.y,h.size,h.alpha);
+if(h.alpha<=0) hearts.splice(i,1);
 }
+requestAnimationFrame(animateHearts);
 }
 
-requestAnimationFrame(animate);
-}
-
-setInterval(firework,2000);
-animate();
+setInterval(createHeart,300);
+animateHearts();
 
 </script>
 
