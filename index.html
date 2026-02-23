@@ -93,13 +93,14 @@ display:flex;
 justify-content:center;
 align-items:center;
 background:black;
-overflow:hidden;
+overflow:visible;
 }
 
 .photo{
 position:absolute;
+height:100vh;        /* Full screen height */
+width:auto;          /* Auto width to maintain ratio */
 max-width:100%;
-max-height:100%;
 object-fit:contain;
 opacity:0;
 transition:opacity 2s ease;
