@@ -18,7 +18,7 @@ min-height:100vh;
 overflow:hidden;
 }
 
-/* SCENE BASE */
+/* SCENE */
 .scene{
 position:fixed;
 width:100%;
@@ -28,19 +28,22 @@ justify-content:center;
 align-items:center;
 flex-direction:column;
 text-align:center;
-opacity:0;
-transition:2s ease;
 padding:30px;
+visibility:hidden;
+opacity:0;
+transition:opacity 1.5s ease;
 }
 
-.active{
+.scene.active{
+visibility:visible;
 opacity:1;
+z-index:10;
 }
 
 /* PASSWORD SCREEN */
 #lock{
 background:radial-gradient(circle at center,#111,#000);
-z-index:10;
+z-index:50;
 }
 
 #lock input{
@@ -51,6 +54,8 @@ margin-top:15px;
 text-align:center;
 font-size:18px;
 width:200px;
+background:white;
+color:black;
 }
 
 button{
@@ -64,7 +69,7 @@ cursor:pointer;
 font-weight:500;
 }
 
-/* STAR FIELD */
+/* STARS */
 #stars{
 position:absolute;
 width:100%;
@@ -118,7 +123,6 @@ animation:shine 4s infinite linear;
 100%{background-position:200%;}
 }
 
-/* FIREWORKS */
 canvas{
 position:absolute;
 top:0;
@@ -133,8 +137,8 @@ z-index:-1;
 <!-- PASSWORD -->
 <div class="scene active" id="lock">
 <h2>Enter Password</h2>
-<input type="password" id="pass" autofocus>
-<button id="enterBtn">Enter</button>
+<input type="password" id="pass" autocomplete="off">
+<button onclick="start()">Enter</button>
 </div>
 
 <!-- INTRO -->
@@ -159,13 +163,11 @@ May life meet you with the same warmth you bring into it.
 
 <script>
 
-/* PASSWORD FIXED FOR MOBILE */
-document.getElementById("enterBtn").addEventListener("click", start);
-
+/* START */
 function start(){
-let value = document.getElementById("pass").value.trim();
+let value=document.getElementById("pass").value.trim();
 
-if(value === "16"){
+if(value==="16"){
 switchScene("lock","intro");
 setTimeout(()=>switchScene("intro","story"),4000);
 setTimeout(playStory,4500);
@@ -174,13 +176,14 @@ alert("Incorrect password");
 }
 }
 
+/* SAFE SCENE SWITCH */
 function switchScene(from,to){
 document.getElementById(from).classList.remove("active");
 document.getElementById(to).classList.add("active");
 }
 
 /* STARS */
-for(let i=0;i<150;i++){
+for(let i=0;i<120;i++){
 let star=document.createElement("div");
 star.classList.add("star");
 star.style.left=Math.random()*100+"%";
@@ -196,8 +199,7 @@ const lines=[
 "Not loud. Not dramatic.",
 "Just real.",
 "",
-"Today is not about history.",
-"It’s simply about wishing someone special",
+"Today is simply about wishing someone special",
 "a year filled with light."
 ];
 
@@ -232,12 +234,12 @@ function firework(){
 let x=Math.random()*canvas.width;
 let y=Math.random()*canvas.height/2;
 
-for(let i=0;i<60;i++){
+for(let i=0;i<50;i++){
 particles.push({
 x:x,y:y,
 speedX:(Math.random()-0.5)*6,
 speedY:(Math.random()-0.5)*6,
-life:80,
+life:70,
 color:`hsl(${Math.random()*360},100%,60%)`
 });
 }
@@ -247,7 +249,8 @@ function animate(){
 ctx.fillStyle="rgba(0,0,0,0.2)";
 ctx.fillRect(0,0,canvas.width,canvas.height);
 
-particles.forEach((p,i)=>{
+for(let i=particles.length-1;i>=0;i--){
+let p=particles[i];
 p.x+=p.speedX;
 p.y+=p.speedY;
 p.life--;
@@ -257,7 +260,7 @@ ctx.fillRect(p.x,p.y,3,3);
 if(p.life<=0){
 particles.splice(i,1);
 }
-});
+}
 
 requestAnimationFrame(animate);
 }
