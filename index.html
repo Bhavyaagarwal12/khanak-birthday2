@@ -1,156 +1,276 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Happy Birthday Khanak 💖</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Khanak</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 body{
-  margin:0;
-  padding:0;
-  text-align:center;
-  font-family:'Poppins',sans-serif;
-  background:linear-gradient(135deg,#ff9ecf,#ffd6ec);
-  overflow:hidden;
-  color:white;
+    background:black;
+    overflow:hidden;
+    color:white;
 }
 
-#lockScreen{
-  position:fixed;
-  width:100%;
-  height:100%;
-  background:linear-gradient(135deg,#ff4da6,#ff99cc);
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  z-index:10;
+/* PASSWORD SCREEN */
+.lock-screen{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:black;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    z-index:10;
 }
 
-input{
-  padding:10px;
-  border:none;
-  border-radius:20px;
-  text-align:center;
-  margin-top:10px;
+.lock-screen input{
+    padding:10px;
+    border:none;
+    border-radius:5px;
+    margin-top:10px;
+    text-align:center;
+}
+
+.lock-screen button{
+    margin-top:10px;
+    padding:8px 20px;
+    border:none;
+    background:red;
+    color:white;
+    cursor:pointer;
+}
+
+/* NETFLIX INTRO */
+.netflix{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:black;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:4rem;
+    font-weight:bold;
+    letter-spacing:10px;
+    color:red;
+    animation:zoom 3s forwards;
+}
+
+@keyframes zoom{
+    0%{transform:scale(0.5);opacity:0;}
+    50%{opacity:1;}
+    100%{transform:scale(1.5);opacity:0;}
+}
+
+/* MAIN SCREEN */
+.main{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    background: radial-gradient(circle at top,#1a001f,#000);
+    opacity:0;
+    transition:1s;
+}
+
+.name{
+    font-family:'Dancing Script',cursive;
+    font-size:4rem;
+    background:linear-gradient(90deg,#ff4d88,#ff99cc,#ff4d88);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+    from{text-shadow:0 0 10px #ff4d88;}
+    to{text-shadow:0 0 30px #ff99cc;}
 }
 
 button{
-  padding:10px 25px;
-  border:none;
-  border-radius:25px;
-  background:white;
-  color:#ff4da6;
-  margin-top:15px;
-  cursor:pointer;
-  transition:0.3s;
-  font-weight:600;
+    margin-top:20px;
+    padding:12px 25px;
+    border:none;
+    border-radius:30px;
+    background:#ff1a75;
+    color:white;
+    cursor:pointer;
 }
 
-button:hover{
-  transform:scale(1.1);
-  background:#ff4da6;
-  color:white;
+/* Popup */
+.popup{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%) scale(0);
+    background:#2b002f;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 0 40px rgba(255,0,150,0.7);
+    text-align:center;
+    transition:0.5s;
+    width:80%;
+    max-width:350px;
 }
 
-h1{
-  margin-top:70px;
-  font-size:55px;
-  font-family:'Great Vibes',cursive;
+.popup.active{
+    transform:translate(-50%,-50%) scale(1);
 }
 
-.typing{
-  font-size:20px;
-  margin:20px;
-  border-right:2px solid white;
-  white-space:nowrap;
-  overflow:hidden;
+/* Stars */
+.star{
+    position:absolute;
+    width:2px;
+    height:2px;
+    background:white;
+    animation:twinkle 2s infinite alternate;
 }
 
-.hidden{
-  display:none;
-  margin-top:20px;
-  font-size:18px;
+@keyframes twinkle{
+    from{opacity:0.2;}
+    to{opacity:1;}
 }
 
+/* Hearts */
 .heart{
-  position:fixed;
-  bottom:-10px;
-  animation:float 6s linear infinite;
+    position:absolute;
+    color:#ff4d88;
+    animation:float 6s linear infinite;
 }
 
 @keyframes float{
-  to{
-    transform:translateY(-100vh);
-    opacity:0;
-  }
+    0%{transform:translateY(100vh);opacity:1;}
+    100%{transform:translateY(-10vh);opacity:0;}
+}
+
+canvas{
+    position:absolute;
+    top:0;
+    left:0;
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🔐 PASSWORD SCREEN -->
-<div id="lockScreen">
-  <h2>Enter Password 💌</h2>
-  <input type="password" id="pass" placeholder="Enter Password">
-  <button onclick="checkPass()">Unlock</button>
+<!-- PASSWORD -->
+<div class="lock-screen" id="lock">
+    <h2>Enter Password 🔐</h2>
+    <input type="password" id="pass">
+    <button onclick="checkPass()">Unlock</button>
 </div>
 
-<h1>Happy Birthday Khanak 🎂</h1>
+<!-- NETFLIX INTRO -->
+<div class="netflix" id="netflix" style="display:none;">KHANAK</div>
 
-<div class="typing" id="typingText"></div>
+<!-- MAIN CONTENT -->
+<div class="main" id="main">
+    <canvas id="fireworks"></canvas>
+    <h1>Happy Birthday</h1>
+    <div class="name">Khanak 💖</div>
+    <button onclick="openPopup()">Open Secret Message 💌</button>
+</div>
 
-<button onclick="show()">Why You Are Special 💖</button>
-
-<div id="special" class="hidden">
-🌸 Your smile is calming <br>
-🌸 You have a beautiful heart <br>
-🌸 You deserve all the happiness in the world ✨
+<!-- POPUP -->
+<div class="popup" id="popup">
+    <h2>For You 💕</h2>
+    <p>
+        I genuinely wish you happiness,<br>
+        success and endless smiles.<br><br>
+        You deserve the best always 🌸✨
+    </p>
+    <button onclick="closePopup()">Close</button>
 </div>
 
 <script>
-
-// PASSWORD CHECK
 function checkPass(){
-  var p=document.getElementById("pass").value;
-  if(p=="16"){
-    document.getElementById("lockScreen").style.display="none";
-  }else{
-    alert("Wrong Password 💔");
-  }
+    let p=document.getElementById("pass").value;
+    if(p==="16"){
+        document.getElementById("lock").style.display="none";
+        document.getElementById("netflix").style.display="flex";
+        setTimeout(()=>{
+            document.getElementById("netflix").style.display="none";
+            document.getElementById("main").style.opacity="1";
+        },3000);
+    } else {
+        alert("Wrong Password 😅");
+    }
 }
 
-// TYPING EFFECT
-const text="Wishing you a day filled with smiles, peace and beautiful moments 💕";
-let i=0;
-function typeWriter(){
-  if(i<text.length){
-    document.getElementById("typingText").innerHTML+=text.charAt(i);
-    i++;
-    setTimeout(typeWriter,50);
-  }
+/* Popup */
+function openPopup(){
+    document.getElementById("popup").classList.add("active");
 }
-typeWriter();
-
-// FLOATING HEARTS
-function heart(){
-  const h=document.createElement("div");
-  h.classList.add("heart");
-  h.innerHTML="💗";
-  h.style.left=Math.random()*100+"vw";
-  h.style.fontSize=(Math.random()*20+20)+"px";
-  h.style.animationDuration=(Math.random()*3+3)+"s";
-  document.body.appendChild(h);
-  setTimeout(()=>{h.remove();},6000);
-}
-setInterval(heart,400);
-
-function show(){
-  document.getElementById("special").style.display="block";
+function closePopup(){
+    document.getElementById("popup").classList.remove("active");
 }
 
+/* Stars */
+for(let i=0;i<100;i++){
+    const star=document.createElement("div");
+    star.classList.add("star");
+    star.style.left=Math.random()*100+"vw";
+    star.style.top=Math.random()*100+"vh";
+    document.body.appendChild(star);
+}
+
+/* Hearts */
+setInterval(()=>{
+    const heart=document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML="❤";
+    heart.style.left=Math.random()*100+"vw";
+    document.body.appendChild(heart);
+    setTimeout(()=>{heart.remove();},6000);
+},400);
+
+/* Fireworks */
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+let particles=[];
+
+function createFirework(){
+    let x=Math.random()*canvas.width;
+    let y=Math.random()*canvas.height/2;
+    for(let i=0;i<50;i++){
+        particles.push({
+            x:x,y:y,
+            speedX:(Math.random()-0.5)*6,
+            speedY:(Math.random()-0.5)*6,
+            life:100,
+            color:`hsl(${Math.random()*360},100%,60%)`
+        });
+    }
+}
+
+function animate(){
+    ctx.fillStyle="rgba(0,0,0,0.2)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    particles.forEach((p,index)=>{
+        p.x+=p.speedX;
+        p.y+=p.speedY;
+        p.life--;
+        ctx.fillStyle=p.color;
+        ctx.fillRect(p.x,p.y,2,2);
+        if(p.life<=0){particles.splice(index,1);}
+    });
+
+    requestAnimationFrame(animate);
+}
+
+setInterval(createFirework,1200);
+animate();
 </script>
 
 </body>
